@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import '../utils/colors.dart' as Global;
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -12,12 +12,8 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //body: Text("HOME"),
-      body: Center(
-        child: CircularProgressIndicator(
-          color: Colors.white,
-        ),
-      ),
+      backgroundColor: Global.primaryBlack,
+      body: Text("GRAPHICS"),
     );
   }
 }

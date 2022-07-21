@@ -327,10 +327,10 @@ class MainState extends State<AfterSplash> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blue,
+      backgroundColor: Global.primaryBlack,
       appBar: AppBar(
         title: Text("Tu precio de luz"),
-        backgroundColor: Colors.amberAccent,
+        backgroundColor: Global.primaryBlack,
       ),
       /*
       body: ListView.builder(
