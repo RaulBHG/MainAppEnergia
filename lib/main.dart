@@ -175,12 +175,10 @@ class PricesState extends State<PricesData> {
 
 class Option {
   final String name;
-  final IconData icon;
-  final Color color;
+  final String icon;
   const Option({
     required this.name,
     required this.icon,
-    required this.color,
   });
 }
 
@@ -309,9 +307,10 @@ class AfterSplash extends StatefulWidget {
 class MainState extends State<AfterSplash> {
 
   static const List<Option> options = [
-    Option(name: "Ahora", icon: Icons.today, color: Colors.black),
-    Option(name: "Por horas", icon: Icons.access_time, color: Colors.blueGrey),
-    Option(name: "Gráfico", icon: Icons.add_chart, color: Colors.grey),
+    Option(name: "Precios", icon: 'images/prices_icon.png'),
+    Option(name: "Evolución", icon: 'images/prices_icon.png'),
+    Option(name: "Compartir", icon: 'images/prices_icon.png'),
+
   ];
 
   int _selectedIndex = 0;
@@ -319,9 +318,9 @@ class MainState extends State<AfterSplash> {
   static const TextStyle optionStyle =
   TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static const List<Widget> _children = <Widget>[
-    HomePage(),
     HoursPage(),
-    GraphicsPage()
+    GraphicsPage(),
+    HomePage()
   ];
 
   @override
@@ -405,21 +404,23 @@ class MainState extends State<AfterSplash> {
       body: Center(
         child: _children.elementAt(_selectedIndex),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.shifting,
-        currentIndex: _selectedIndex,
-        backgroundColor: Colors.black, // <-- This works for fixed
-        selectedItemColor: Colors.greenAccent,
-        unselectedItemColor: Colors.white,
-        onTap: (value) => setState(() => _selectedIndex = value),
-        items: [
-          for (final option in options) BottomNavigationBarItem(
-              icon: Icon(option.icon),
-              label: option.name,
-              backgroundColor: option.color
+      bottomNavigationBar: SizedBox(height: 80, child:
+        BottomNavigationBar(
+          type: BottomNavigationBarType.shifting,
+          currentIndex: _selectedIndex,
+          backgroundColor: Colors.black, // <-- This works for fixed
+          selectedItemColor: Colors.greenAccent,
+          unselectedItemColor: Colors.white,
+          onTap: (value) => setState(() => _selectedIndex = value),
+          items: [
+            for (final option in options) BottomNavigationBarItem(
+                icon: new Image.asset(option.icon),
+                label: option.name,
+                backgroundColor: Global.mainColor
 
-          ),
-        ],
+            ),
+          ],
+        ),
       ),
     );
   }

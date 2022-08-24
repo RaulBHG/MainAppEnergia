@@ -18,4 +18,4 @@ const MaterialColor primaryBlack = MaterialColor(
 );
 const int _blackPrimaryValue = 0xFF000000;
 
-const mainColor = Colors.black;
+const mainColor = Color.fromARGB(255, 17, 22, 34);
