@@ -176,9 +176,11 @@ class PricesState extends State<PricesData> {
 class Option {
   final String name;
   final String icon;
+  final String activeIcon;
   const Option({
     required this.name,
     required this.icon,
+    required this.activeIcon,
   });
 }
 
@@ -307,9 +309,9 @@ class AfterSplash extends StatefulWidget {
 class MainState extends State<AfterSplash> {
 
   static const List<Option> options = [
-    Option(name: "Precios", icon: 'images/prices_icon.png'),
-    Option(name: "Evolución", icon: 'images/prices_icon.png'),
-    Option(name: "Compartir", icon: 'images/prices_icon.png'),
+    Option(name: "Precios", icon: 'assets/images/prices_icon.png', activeIcon: 'assets/images/graph_icon.png'),
+    Option(name: "Evolución", icon: 'assets/images/graph_icon.png', activeIcon: 'assets/images/prices_icon.png'),
+    Option(name: "Compartir", icon: 'assets/images/prices_icon.png', activeIcon: 'assets/images/graph_icon.png'),
 
   ];
 
@@ -326,10 +328,13 @@ class MainState extends State<AfterSplash> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Global.primaryBlack,
+      backgroundColor: Global.mainColor,
+
       appBar: AppBar(
-        title: Text("Tu precio de luz"),
-        backgroundColor: Global.primaryBlack,
+        title: Image.asset('assets/images/logo.png', height: 100, width: 150),
+        centerTitle: true,
+        toolbarHeight: 80,
+        backgroundColor: Global.mainColor,
       ),
       /*
       body: ListView.builder(
@@ -412,9 +417,11 @@ class MainState extends State<AfterSplash> {
           selectedItemColor: Colors.greenAccent,
           unselectedItemColor: Colors.white,
           onTap: (value) => setState(() => _selectedIndex = value),
+          iconSize: 50,
           items: [
             for (final option in options) BottomNavigationBarItem(
-                icon: new Image.asset(option.icon),
+                icon: Image.asset(option.icon, scale: .5,  height: 40, width: 25),
+                activeIcon: Image.asset(option.activeIcon, scale: .5,  height: 40, width: 25),
                 label: option.name,
                 backgroundColor: Global.mainColor
 

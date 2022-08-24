@@ -12,7 +12,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Global.primaryBlack,
+      backgroundColor: Global.mainColor,
       body: Text("GRAPHICS"),
     );
   }

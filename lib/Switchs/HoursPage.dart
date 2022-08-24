@@ -22,7 +22,7 @@ class _HoursPageState extends State<HoursPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Global.primaryBlack,
+      backgroundColor: Global.mainColor,
       body: ListView.builder(
         itemCount: data == null ? 0 : data.length,
         itemBuilder: (BuildContext context, int index) {

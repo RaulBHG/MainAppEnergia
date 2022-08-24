@@ -21,7 +21,7 @@ class _GraphicsPageState extends State<GraphicsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Global.primaryBlack,
+        backgroundColor: Global.mainColor,
         body: Column(children: [
           //Initialize the chart widget
           SfCartesianChart(
