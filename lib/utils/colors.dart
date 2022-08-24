@@ -19,3 +19,5 @@ const MaterialColor primaryBlack = MaterialColor(
 const int _blackPrimaryValue = 0xFF000000;
 
 const mainColor = Color.fromARGB(255, 17, 22, 34);
+const darkMainColor = Colors.blue;
+    //.fromARGB(255, 6, 12, 26)
