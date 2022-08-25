@@ -19,5 +19,9 @@ const MaterialColor primaryBlack = MaterialColor(
 const int _blackPrimaryValue = 0xFF000000;
 
 const mainColor = Color.fromARGB(255, 17, 22, 34);
-const darkMainColor = Colors.blue;
-    //.fromARGB(255, 6, 12, 26)
+const greenMain = Color.fromARGB(255, 88, 186, 176);
+const lightGray = Color.fromARGB(255, 32, 38, 52);
+const lighterGray = Color.fromARGB(255, 59, 66, 82);
+const textMain = Colors.white;
+const greenCorrect = Color.fromARGB(255, 27,185,52);
+const redWrong = Color.fromARGB(255, 237,28,36);
