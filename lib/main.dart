@@ -340,7 +340,6 @@ class MainState extends State<AfterSplash> {
         BottomNavigationBar(
           type: BottomNavigationBarType.shifting,
           currentIndex: _selectedIndex,
-          showUnselectedLabels: true,
           selectedItemColor: Colors.greenAccent,
           unselectedItemColor: Colors.white,
           onTap: (value) => setState(() => _selectedIndex = value),
