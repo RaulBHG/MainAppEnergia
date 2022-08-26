@@ -4,10 +4,10 @@ import '../utils/colors.dart' as Global;
 import '../utils/values.dart' as GlobalValues;
 
 class SingleArea {
-  String title;
-  String hour;
-  int price;
-  Color color;
+  final String title;
+  final String hour;
+  final int price;
+  final Color color;
   var padding = const EdgeInsets.only(right: 7.5, bottom: 15);
 
   //PADDING FORMAT: const EdgeInsets.only(right: 7.5, bottom: 15)

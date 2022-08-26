@@ -72,11 +72,11 @@ class PricesState extends State<PricesData> {
     }
     media = int.parse((precioTotal / 24).toString().split(".")[0]);
 
-    print('TOTAL: ${precioTotal}');
+    /*print('TOTAL: ${precioTotal}');
     print('Media: ${media}');
     print('Precio Hoy: ${precioActual}');
     print('Precio Alto: ${precioMasAlto}');
-    print('Precio Bajo: ${precioMasBajo}');
+    print('Precio Bajo: ${precioMasBajo}');*/
     return "Success!";
   }
 
@@ -99,7 +99,7 @@ class PricesState extends State<PricesData> {
   @override
   void initState() {
     super.initState();
-    this.getSWData();
+    getSWData();
   }
 }
 
@@ -128,15 +128,15 @@ class MainState extends State<AfterSplash> {
     Option(
         name: "Precios",
         icon: 'assets/images/prices_icon.png',
-        activeIcon: 'assets/images/graph_icon.png'),
+        activeIcon: 'assets/images/prices_icon_active.png'),
     Option(
         name: "Evolución",
         icon: 'assets/images/graph_icon.png',
-        activeIcon: 'assets/images/prices_icon.png'),
+        activeIcon: 'assets/images/graph_icon_active.png'),
     Option(
         name: "Compartir",
-        icon: 'assets/images/prices_icon.png',
-        activeIcon: 'assets/images/graph_icon.png'),
+        icon: 'assets/images/share_icon.png',
+        activeIcon: 'assets/images/share_icon_active.png'),
   ];
 
   int _selectedIndex = 0;
@@ -155,19 +155,20 @@ class MainState extends State<AfterSplash> {
     return Scaffold(
       backgroundColor: Global.mainColor,
       appBar: AppBar(
-        title: Image.asset('assets/images/logo.png', height: 100, width: 150),
+        title: Image.asset('assets/images/logo.png', height: 70, width: 120),
         centerTitle: true,
-        toolbarHeight: 80,
+        toolbarHeight: 70,
         backgroundColor: Global.mainColor,
       ),
       body: Center(child: _children.elementAt(_selectedIndex)),
       bottomNavigationBar: SizedBox(
         height: 80,
         child: BottomNavigationBar(
-          type: BottomNavigationBarType.shifting,
+          type: BottomNavigationBarType.fixed,
           currentIndex: _selectedIndex,
           selectedItemColor: Global.greenMain,
-          unselectedItemColor: Global.textMain,
+          unselectedItemColor: Color.fromARGB(255, 189, 189, 189),
+          backgroundColor: Global.mainColor,
           onTap: (value) => setState(() => _selectedIndex = value),
           iconSize: 50,
           items: [

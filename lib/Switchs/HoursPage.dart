@@ -3,7 +3,6 @@ import 'package:test_project_2/components/singleArea.dart';
 import '../main.dart';
 
 import '../utils/colors.dart' as Global;
-import '../utils/values.dart' as GlobalValues;
 
 import '../components/customContainer.dart' as CustomContainer;
 
@@ -98,15 +97,11 @@ class _HoursPageState extends State<HoursPage> {
                                       width: 25,
                                       height: 8,
                                       decoration: BoxDecoration(
-                                          color: (int.parse(data[index]["PCB"]
-                                              .split(",")[0]) <
-                                              media)
-                                              ? Global.greenCorrect
-                                              : (int.parse(data[index]["PCB"]
-                                              .split(",")[0]) <
-                                              (media + 40))
-                                              ? Color.fromARGB(255, 245, 202, 25)
-                                              : Global.redWrong,
+                                          color: (int.parse(data[index]["PCB"].split(",")[0]) > media + 40)
+                                              ? Global.redWrong
+                                              : (int.parse(data[index]["PCB"].split(",")[0]) > (media - 40))
+                                              ? Global.yellowWarning
+                                              : Global.greenCorrect,
                                           borderRadius: BorderRadius.circular(10)),
                                     ),
                                     Padding(
@@ -134,6 +129,7 @@ class _HoursPageState extends State<HoursPage> {
               ))
             ],
           ),
-        ));
+        )
+    );
   }
 }
