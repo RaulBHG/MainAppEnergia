@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:test_project_2/components/singleArea.dart';
 import '../main.dart';
+
 import '../utils/colors.dart' as Global;
 import '../utils/values.dart' as GlobalValues;
-import 'package:intl/intl.dart';
-import 'dart:async';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+
+import '../components/customContainer.dart' as CustomContainer;
 
 class HoursPage extends StatefulWidget {
   const HoursPage({Key? key}) : super(key: key);
@@ -15,14 +15,17 @@ class HoursPage extends StatefulWidget {
 }
 
 class _HoursPageState extends State<HoursPage> {
-  List data = PricesState.data;
-  int precioTotal = PricesState.precioTotal;
-  int media = PricesState.media;
-  String horaActual = PricesState.horaActual;
-  int precioActual = PricesState.precioActual;
-  int precioMasAlto = PricesState.precioMasAlto;
-  int precioMasBajo = PricesState.precioMasBajo;
+  static List data = PricesState.data;
+  static int media = PricesState.media;
 
+  static String horaActual = PricesState.horaActual;
+  static int precioActual = PricesState.precioActual;
+
+  static int precioMasAlto = PricesState.precioMasAlto;
+  static String horaMasAlta = PricesState.horaMasAlta;
+
+  static int precioMasBajo = PricesState.precioMasBajo;
+  static String horaMasBaja = PricesState.horaMasBaja;
 
   @override
   Widget build(BuildContext context) {
@@ -37,80 +40,12 @@ class _HoursPageState extends State<HoursPage> {
                   // PRECIO ACTUAL
                   Expanded(
                     // <- para que ocupe todo lo que pueda lo que hace que al haber 2 sean 50%
-                    child: Card(
-                      color: Global.lightGray,
-                      shadowColor: Colors.transparent,
-                      margin:
-                          EdgeInsets.only(right: 7.5, bottom: 15),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(GlobalValues.raiusSection) // <- anular border radius de la forma rectángulo
-                      ),
-                      child: Container(
-                        padding: EdgeInsets.all(10.0),
-                        child: Column(
-                          children: [
-                            Row(
-                              children: [
-                                Text("Precio ahora", style: TextStyle(fontSize: 17.5)),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Text(horaActual, style: TextStyle(fontSize: 17.5)),
-                              ],
-                            ),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.baseline,
-                              textBaseline: TextBaseline.alphabetic,
-                              children: [
-                                Text("0.${precioActual}€", style: TextStyle(fontSize: 28.0)),
-                                Text(" kWh", style: TextStyle(fontSize: 15.0)),
-                              ],
-                            )
-
-                          ],
-                        ),
-                      ),
-                    ),
+                    child: SingleArea("Precio ahora", horaActual, precioActual, Global.textMain, const EdgeInsets.only(right: 10, bottom: 15)).singleAreaWidget(),
                   ),
 
                   Expanded(
                     // <- para que ocupe todo lo que pueda lo que hace que al haber 2 sean 50%
-                    child: Card(
-                      color: Global.lightGray,
-                      shadowColor: Colors.transparent,
-                      margin:
-                      EdgeInsets.only(left: 7.5, bottom: 15),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(GlobalValues.raiusSection) // <- anular border radius de la forma rectángulo
-                      ),
-                      child: Container(
-                        padding: EdgeInsets.all(10.0),
-                        child: Column(
-                          children: [
-                            Row(
-                              children: [
-                                Text("Precio más bajo", style: TextStyle(fontSize: 17.5, color: Global.greenCorrect)),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Text(horaActual, style: TextStyle(fontSize: 17.5, color: Global.greenCorrect)),
-                              ],
-                            ),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.baseline,
-                              textBaseline: TextBaseline.alphabetic,
-                              children: [
-                                Text("0.${precioActual}€", style: TextStyle(fontSize: 28.0)),
-                                Text(" kWh", style: TextStyle(fontSize: 15.0)),
-                              ],
-                            )
-
-                          ],
-                        ),
-                      ),
-                    ),
+                    child: SingleArea("Precio más bajo", horaMasBaja, precioMasBajo, Global.greenCorrect, const EdgeInsets.only(left: 10, bottom: 15)).singleAreaWidget(),
                   ),
                 ],
               ),
@@ -119,93 +54,21 @@ class _HoursPageState extends State<HoursPage> {
                   // PRECIO ACTUAL
                   Expanded(
                     // <- para que ocupe todo lo que pueda lo que hace que al haber 2 sean 50%
-                    child: Card(
-                      color: Global.lightGray,
-                      shadowColor: Colors.transparent,
-                      margin:
-                      EdgeInsets.only(right: 7.5, bottom: 15),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(GlobalValues.raiusSection) // <- anular border radius de la forma rectángulo
-                      ),
-                      child: Container(
-                        padding: EdgeInsets.all(10.0),
-                        child: Column(
-                          children: [
-                            Row(
-                              children: [
-                                Text("Precio medio", style: TextStyle(fontSize: 17.5)),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Text("", style: TextStyle(fontSize: 17.5)),
-                              ],
-                            ),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.baseline,
-                              textBaseline: TextBaseline.alphabetic,
-                              children: [
-                                Text("0.${media}€", style: TextStyle(fontSize: 28.0)),
-                                Text(" kWh", style: TextStyle(fontSize: 15.0)),
-                              ],
-                            )
-
-                          ],
-                        ),
-                      ),
-                    ),
+                    child: SingleArea("Precio Medio", "", media, Global.textMain, const EdgeInsets.only(right: 10, bottom: 15)).singleAreaWidget(),
                   ),
 
                   Expanded(
                     // <- para que ocupe todo lo que pueda lo que hace que al haber 2 sean 50%
-                    child: Card(
-                      color: Global.lightGray,
-                      shadowColor: Colors.transparent,
-                      margin:
-                      EdgeInsets.only(left: 7.5, bottom: 15),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(GlobalValues.raiusSection) // <- anular border radius de la forma rectángulo
-                      ),
-                      child: Container(
-                        padding: EdgeInsets.all(10.0),
-                        child: Column(
-                          children: [
-                            Row(
-                              children: [
-                                Text("Precio ahora", style: TextStyle(fontSize: 17.5)),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Text("horaActual", style: TextStyle(fontSize: 17.5)),
-                              ],
-                            ),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.baseline,
-                              textBaseline: TextBaseline.alphabetic,
-                              children: [
-                                Text("0.€", style: TextStyle(fontSize: 28.0)),
-                                Text(" kWh", style: TextStyle(fontSize: 15.0)),
-                              ],
-                            )
-
-                          ],
-                        ),
-                      ),
-                    ),
+                    child: SingleArea("Precio más alto", horaMasAlta, precioMasAlto, Global.redWrong, const EdgeInsets.only(left: 10, bottom: 15)).singleAreaWidget(),
                   ),
                 ],
               ),
 
               //LISTA POR HORAS
               Flexible(
-                  child: Container(
-                    decoration: BoxDecoration(
-                        color: Global.lightGray,
-                        borderRadius: BorderRadius.circular(GlobalValues.raiusSection) // <- anular border radius de la forma rectángulo
-                    ),
+                  child: CustomContainer.customContainer(
                     //TIPO LISTA
-                    child: ListView.builder(
+                    ListView.builder(
                       itemCount: data == null ? 0 : data.length,
                       // <- señala la cantidad de elementos que va a tener la lista
                       itemBuilder: (BuildContext context, int index) {
@@ -226,45 +89,48 @@ class _HoursPageState extends State<HoursPage> {
                             bottom: BorderSide(color: Global.lighterGray),
                           )),
                           child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               // <- para que se extienda la info
                               children: <Widget>[
-                                Text(
-                                  data[index]["Hora"].split("-")[0] +
-                                      "h - " +
-                                      data[index]["Hora"].split("-")[1] +
-                                      "h",
-                                  style: TextStyle(
-                                      fontSize: 20.0),
-                                ),
-                                // Linea con colores distintos en función de la distancia de la media
-                                Container(
-                                  width: 60,
-                                  height: 15,
-                                  decoration: BoxDecoration(
-                                      color: (int.parse(data[index]["PCB"]
-                                                  .split(",")[0]) <
+                                Row(
+                                  children: [
+                                    Container(
+                                      width: 25,
+                                      height: 8,
+                                      decoration: BoxDecoration(
+                                          color: (int.parse(data[index]["PCB"]
+                                              .split(",")[0]) <
                                               media)
-                                          ? Color.fromARGB(255, 33, 245, 36)
-                                          : (int.parse(data[index]["PCB"]
-                                                      .split(",")[0]) <
-                                                  (media + 40))
+                                              ? Global.greenCorrect
+                                              : (int.parse(data[index]["PCB"]
+                                              .split(",")[0]) <
+                                              (media + 40))
                                               ? Color.fromARGB(255, 245, 202, 25)
-                                              : Color.fromARGB(255, 255, 0, 0),
-                                      borderRadius: BorderRadius.circular(10)),
+                                              : Global.redWrong,
+                                          borderRadius: BorderRadius.circular(10)),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(horizontal: 15),
+                                      child: Text(
+                                        "${data[index]["Hora"].split("-")[0]}:00h", style: TextStyle(fontSize: 17.5),
+                                      ),
+                                    )
+                                  ],
                                 ),
+
+                                // Linea con colores distintos en función de la distancia de la media
                                 Text(
                                   "0." +
                                       data[index]["PCB"].split(",")[0] +
                                       "€/kWh",
                                   style: TextStyle(
-                                      fontSize: 20.0),
+                                      fontSize: 17.5),
                                 )
                               ]),
                         ),
                       );
                   },
-                ),
+                )
               ))
             ],
           ),

@@ -25,3 +25,4 @@ const lighterGray = Color.fromARGB(255, 59, 66, 82);
 const textMain = Colors.white;
 const greenCorrect = Color.fromARGB(255, 27,185,52);
 const redWrong = Color.fromARGB(255, 237,28,36);
+const yellowWarning = Color.fromARGB(255, 199,140,39);

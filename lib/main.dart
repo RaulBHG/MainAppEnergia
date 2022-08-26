@@ -31,12 +31,18 @@ class PricesData extends StatefulWidget {
 // LLAMADA API DEL IMPERIO ESPAÑOL
 class PricesState extends State<PricesData> {
   static List data = [];
+
   static int precioTotal = 0;
   static int media = 0;
+
   static String horaActual = GetPrices.getHour();
   static int precioActual = 0;
+
   static int precioMasAlto = 0;
+  static String horaMasAlta = "";
+
   static int precioMasBajo = 10000;
+  static String horaMasBaja= "";
 
   Future<String> getSWData() async {
     var res = await http.get(Uri.parse(GetPrices.getNowDate()),
@@ -54,9 +60,11 @@ class PricesState extends State<PricesData> {
       }
 
       //CÁLCULO PRECIO MÁS ALTO
+      horaMasAlta = (price > precioMasAlto ? hour['Hora'].split('-')[0]+":30" : horaMasAlta);
       precioMasAlto = (price > precioMasAlto ? price : precioMasAlto);
 
       //CÁLCULO PRECIO MÁS BAJO
+      horaMasBaja = (price < precioMasBajo ? hour['Hora'].split('-')[0]+":30" : horaMasBaja);
       precioMasBajo = (price < precioMasBajo ? price : precioMasBajo);
 
       //PRECIO TOTAL
