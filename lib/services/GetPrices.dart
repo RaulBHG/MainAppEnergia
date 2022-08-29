@@ -14,7 +14,7 @@ class GetPrices{
   }
 
   static String getHour() {
-    String formattedDate = DateFormat('hh:mm').format(now);
+    String formattedDate = DateFormat('HH:mm').format(now);
 
     return formattedDate;
   }

@@ -3,11 +3,15 @@ import 'package:test_project_2/Switchs/GraphicsPage.dart';
 import 'package:test_project_2/Switchs/HomePage.dart';
 import 'package:test_project_2/Switchs/HoursPage.dart';
 import 'package:test_project_2/services/GetPrices.dart';
-import 'utils/colors.dart' as Global;
-import 'dart:async';
-import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:splashscreen/splashscreen.dart';
+import 'package:flutter_share/flutter_share.dart';
+
+import 'dart:async';
+import 'dart:convert';
+
+import 'utils/colors.dart' as Global;
+
 
 void main() {
   //runApp(MyApp());
@@ -124,6 +128,8 @@ class AfterSplash extends StatefulWidget {
 
 // ESTRUCTURA PRINCIPAL
 class MainState extends State<AfterSplash> {
+
+  //SELECCION OPCIONES
   static const List<Option> options = [
     Option(
         name: "Precios",
@@ -141,14 +147,23 @@ class MainState extends State<AfterSplash> {
 
   int _selectedIndex = 0;
 
-  //Option get option => options [_selectedIndex];
-  //static const TextStyle optionStyle =
-  //TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static const List<Widget> _children = <Widget>[
     HoursPage(),
     GraphicsPage(),
     HomePage()
   ];
+  //FIN SELECCIÓN DE OPCIONES
+
+  //SHARE FUNCTION
+  Future<void> share() async {
+    print("LLEGA");
+    await FlutterShare.share(
+        title: 'Compartir ejemplo',
+        text: 'Texto de info a compartir',
+        linkUrl: 'https://flutter.dev/',
+        chooserTitle: 'Titulo de chooser');
+  }
+  //FIN SHARE FUNCTION
 
   @override
   Widget build(BuildContext context) {
@@ -169,7 +184,7 @@ class MainState extends State<AfterSplash> {
           selectedItemColor: Global.greenMain,
           unselectedItemColor: Color.fromARGB(255, 189, 189, 189),
           backgroundColor: Global.mainColor,
-          onTap: (value) => setState(() => _selectedIndex = value),
+          onTap: (value) => ((value != 2) ? (setState(() => _selectedIndex = value)) : share()),
           iconSize: 50,
           items: [
             for (final option in options)
