@@ -156,7 +156,6 @@ class MainState extends State<AfterSplash> {
 
   //SHARE FUNCTION
   Future<void> share() async {
-    print("LLEGA");
     await FlutterShare.share(
         title: 'Compartir ejemplo',
         text: 'Texto de info a compartir',
@@ -177,7 +176,7 @@ class MainState extends State<AfterSplash> {
       ),
       body: Center(child: _children.elementAt(_selectedIndex)),
       bottomNavigationBar: SizedBox(
-        height: 80,
+        height: 70,
         child: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
           currentIndex: _selectedIndex,
@@ -185,14 +184,17 @@ class MainState extends State<AfterSplash> {
           unselectedItemColor: Color.fromARGB(255, 189, 189, 189),
           backgroundColor: Global.mainColor,
           onTap: (value) => ((value != 2) ? (setState(() => _selectedIndex = value)) : share()),
-          iconSize: 50,
           items: [
             for (final option in options)
               BottomNavigationBarItem(
-                icon:
-                    Image.asset(option.icon, scale: .5, height: 40, width: 25),
-                activeIcon: Image.asset(option.activeIcon,
-                    scale: .5, height: 40, width: 25),
+                icon: Container(
+                    padding: EdgeInsets.fromLTRB(0, 0, 0, 6),
+                    child: Image.asset(option.icon, height: 20, width: 25),
+                ),
+                activeIcon: Container(
+                  padding: EdgeInsets.fromLTRB(0, 0, 0, 6),
+                  child: Image.asset(option.activeIcon, height: 20, width: 25),
+                ),
                 label: option.name,
                 backgroundColor: Global.mainColor,
               ),

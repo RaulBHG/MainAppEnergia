@@ -26,6 +26,21 @@ class _HoursPageState extends State<HoursPage> {
   static int precioMasBajo = PricesState.precioMasBajo;
   static String horaMasBaja = PricesState.horaMasBaja;
 
+  changeDate(BuildContext ctx){
+    return showModalBottomSheet(
+      context: ctx,
+      builder: (ctx) => BottomSheet(
+        onClosing: () {},
+        builder: (ctx) => Container(
+          height: 200,
+          child: Center(
+            child: Text('Hello, there!'),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -126,10 +141,23 @@ class _HoursPageState extends State<HoursPage> {
                       );
                   },
                 )
-              ))
+              )),
+
             ],
           ),
-        )
+        ),
+
+        //BOTÓN ELEGIR FECHA
+        //floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            changeDate(context);
+          },
+          backgroundColor: Global.darkBlue,
+          disabledElevation: 0,
+          tooltip: 'Escoger fecha',
+          child: Icon(Icons.calendar_month, size: 30),
+        ),
     );
   }
 }
