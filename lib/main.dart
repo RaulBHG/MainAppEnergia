@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:test_project_2/Switchs/GraphicsPage.dart';
 import 'package:test_project_2/Switchs/HomePage.dart';
 import 'package:test_project_2/Switchs/HoursPage.dart';
+import 'package:test_project_2/objects/singleArea.dart';
 import 'package:test_project_2/services/GetPrices.dart';
 
 import 'package:http/http.dart' as http;
@@ -55,6 +56,7 @@ class PricesState extends State<PricesData> {
   static int precioMasBajo = 10000;
   static String horaMasBaja= "";
 
+  AllObject dataDay = new AllObject();
 
   Future<String> getSWData() async {
     var res = await http.get(Uri.parse(GetPrices.getNowDate()),
