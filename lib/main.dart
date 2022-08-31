@@ -3,9 +3,13 @@ import 'package:test_project_2/Switchs/GraphicsPage.dart';
 import 'package:test_project_2/Switchs/HomePage.dart';
 import 'package:test_project_2/Switchs/HoursPage.dart';
 import 'package:test_project_2/services/GetPrices.dart';
+
 import 'package:http/http.dart' as http;
 import 'package:splashscreen/splashscreen.dart';
 import 'package:flutter_share/flutter_share.dart';
+
+import 'package:flutter_localizations/flutter_localizations.dart';
+
 
 import 'dart:async';
 import 'dart:convert';
@@ -16,6 +20,12 @@ import 'utils/colors.dart' as Global;
 void main() {
   //runApp(MyApp());
   runApp(MaterialApp(
+
+    //PARA PODER PONER EL CALENDARIO EN ESPAÑOL
+    localizationsDelegates: [
+      GlobalMaterialLocalizations.delegate
+    ],
+
     theme: ThemeData(
       textTheme:
         TextTheme(
@@ -34,19 +44,17 @@ class PricesData extends StatefulWidget {
 
 // LLAMADA API DEL IMPERIO ESPAÑOL
 class PricesState extends State<PricesData> {
-  static List data = [];
 
+  static List data = [];
   static int precioTotal = 0;
   static int media = 0;
-
   static String horaActual = GetPrices.getHour();
   static int precioActual = 0;
-
   static int precioMasAlto = 0;
   static String horaMasAlta = "";
-
   static int precioMasBajo = 10000;
   static String horaMasBaja= "";
+
 
   Future<String> getSWData() async {
     var res = await http.get(Uri.parse(GetPrices.getNowDate()),
@@ -76,12 +84,11 @@ class PricesState extends State<PricesData> {
     }
     media = int.parse((precioTotal / 24).toString().split(".")[0]);
 
-    /*print('TOTAL: ${precioTotal}');
-    print('Media: ${media}');
-    print('Precio Hoy: ${precioActual}');
-    print('Precio Alto: ${precioMasAlto}');
-    print('Precio Bajo: ${precioMasBajo}');*/
     return "Success!";
+  }
+
+  void getSW() {
+    getSWData();
   }
 
   @override
@@ -107,6 +114,12 @@ class PricesState extends State<PricesData> {
   }
 }
 
+// DESPUÉS DE LA SPLASH SCREEN
+class AfterSplash extends StatefulWidget {
+  @override
+  MainState createState() => MainState();
+}
+
 // OPCIONES DEL MENÚ DE ABAJO
 class Option {
   final String name;
@@ -118,12 +131,6 @@ class Option {
     required this.icon,
     required this.activeIcon,
   });
-}
-
-// DESPUÉS DE LA SPLASH SCREEN
-class AfterSplash extends StatefulWidget {
-  @override
-  MainState createState() => MainState();
 }
 
 // ESTRUCTURA PRINCIPAL
