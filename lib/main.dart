@@ -46,47 +46,64 @@ class PricesData extends StatefulWidget {
 // LLAMADA API DEL IMPERIO ESPAÑOL
 class PricesState extends State<PricesData> {
 
-  static List data = [];
-  static int precioTotal = 0;
-  static int media = 0;
-  static String horaActual = GetPrices.getHour();
-  static int precioActual = 0;
-  static int precioMasAlto = 0;
-  static String horaMasAlta = "";
-  static int precioMasBajo = 10000;
-  static String horaMasBaja= "";
+  static List dataIn = [];
+  static int precioTotalIn = 0;
+  static int mediaIn = 0;
+  static String horaActualIn = GetPrices.getHour();
+  static int precioActualIn = 0;
+  static int precioMasAltoIn = 0;
+  static String horaMasAltaIn = "";
+  static int precioMasBajoIn = 10000;
+  static String horaMasBajaIn = "";
+  
+  static AllObject mainObject = new AllObject(dataIn, precioTotalIn, mediaIn, horaActualIn, precioActualIn, precioMasAltoIn, horaMasAltaIn, precioMasBajoIn, horaMasBajaIn);
 
-  AllObject dataDay = new AllObject();
+  //AllObject dataDay = new AllObject();
 
-  Future<String> getSWData() async {
-    var res = await http.get(Uri.parse(GetPrices.getNowDate()),
+  Future<String> getSWData({String date = "today"}) async {
+    var res = await http.get(Uri.parse(GetPrices.getNowDate(date)),
         headers: {"Accept": "application/json"});
-    setState(() {
-      var resBody = json.decode(res.body);
-      data = resBody["PVPC"];
-    });
-    for (var hour in data) {
+
+    var resBody = json.decode(res.body);
+    mainObject.data = resBody["PVPC"];
+
+    mainObject.precioTotal = 0;
+    mainObject.precioMasAlto = 0;
+    mainObject.precioMasBajo = 10000;
+    for (var hour in mainObject.data) {
       int price = int.parse(hour["PCB"].split(",")[0]);
 
       //CÁLCULO PRECIO ACTUAL
-      if (horaActual.split(':')[0] == hour['Hora'].split('-')[0]) {
-        precioActual = price;
+      mainObject.horaActual = GetPrices.getHour();
+      if (mainObject.horaActual.split(':')[0] == hour['Hora'].split('-')[0]) {
+        mainObject.precioActual = price;
       }
 
       //CÁLCULO PRECIO MÁS ALTO
-      horaMasAlta = (price > precioMasAlto ? hour['Hora'].split('-')[0]+":30" : horaMasAlta);
-      precioMasAlto = (price > precioMasAlto ? price : precioMasAlto);
+      mainObject.horaMasAlta = (price > mainObject.precioMasAlto ? hour['Hora'].split('-')[0]+":30" : mainObject.horaMasAlta);
+      mainObject.precioMasAlto = (price > mainObject.precioMasAlto ? price : mainObject.precioMasAlto);
 
       //CÁLCULO PRECIO MÁS BAJO
-      horaMasBaja = (price < precioMasBajo ? hour['Hora'].split('-')[0]+":30" : horaMasBaja);
-      precioMasBajo = (price < precioMasBajo ? price : precioMasBajo);
+      mainObject.horaMasBaja = (price < mainObject.precioMasBajo ? hour['Hora'].split('-')[0]+":30" : mainObject.horaMasBaja);
+      mainObject.precioMasBajo = (price < mainObject.precioMasBajo ? price : mainObject.precioMasBajo);
 
       //PRECIO TOTAL
-      precioTotal += price;
+      mainObject.precioTotal += price;
     }
-    media = int.parse((precioTotal / 24).toString().split(".")[0]);
+    mainObject.media = int.parse((mainObject.precioTotal / 24).toString().split(".")[0]);
 
-    return "Success!";
+    /*print("LLEGA--------------------------------------------");
+    print("Precio total: ${mainObject.precioTotal}");
+    print("Precio media: ${mainObject.media}");
+    print("Precio horaActual: ${mainObject.horaActual}");
+    print("Precio precioActual: ${mainObject.precioActual}");
+    print("Precio precioMasAlto: ${mainObject.precioMasAlto}");
+    print("Precio horaMasAlta: ${mainObject.horaMasAlta}");
+    print("Precio precioMasBajo: ${mainObject.precioMasBajo}");
+    print("Precio horaMasBaja: ${mainObject.horaMasBaja}");*/
+
+
+    return "SUCCESS";
   }
 
   void getSW() {

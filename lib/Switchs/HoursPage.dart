@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:test_project_2/components/singleArea.dart';
+import 'package:test_project_2/objects/singleArea.dart';
 import '../main.dart';
 
 import '../utils/colors.dart' as Global;
+
+import 'package:intl/intl.dart';
 
 import '../components/customContainer.dart' as CustomContainer;
 
@@ -16,10 +19,20 @@ class HoursPage extends StatefulWidget {
 class _HoursPageState extends State<HoursPage> {
 
   final PricesState pricesData= new PricesState();
+  AllObject mainData = PricesState.mainObject;
+
+
+  void getNewData(date) {
+    pricesData.getSWData(date: date).then((value) {
+      setState(() {
+        mainData = PricesState.mainObject;
+      });
+    });
+  }
 
   static DateTime selectedDate = DateTime.now();
   Future<void> _selectDate(BuildContext context) async {
-    PricesState.horaMasBaja = "MIS TESTICULOS";
+
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: selectedDate,
@@ -30,6 +43,7 @@ class _HoursPageState extends State<HoursPage> {
     if (picked != null && picked != selectedDate){
       setState(() {
         selectedDate = picked;
+        getNewData(DateFormat('yyyy-MM-dd').format(selectedDate));
       });
     }
 
@@ -48,12 +62,12 @@ class _HoursPageState extends State<HoursPage> {
                   // PRECIO ACTUAL
                   Expanded(
                     // <- para que ocupe todo lo que pueda lo que hace que al haber 2 sean 50%
-                    child: SingleArea("Precio ahora", PricesState.horaActual, PricesState.precioActual, Global.textMain, const EdgeInsets.only(right: 10, bottom: 15)).singleAreaWidget(),
+                    child: SingleArea("Precio ahora", mainData.horaActual, mainData.precioActual, Global.textMain, const EdgeInsets.only(right: 10, bottom: 15)).singleAreaWidget(),
                   ),
 
                   Expanded(
                     // <- para que ocupe todo lo que pueda lo que hace que al haber 2 sean 50%
-                    child: SingleArea("Precio más bajo", PricesState.horaMasBaja, PricesState.precioMasBajo, Global.greenCorrect, const EdgeInsets.only(left: 10, bottom: 15)).singleAreaWidget(),
+                    child: SingleArea("Precio más bajo", mainData.horaMasBaja, mainData.precioMasBajo, Global.greenCorrect, const EdgeInsets.only(left: 10, bottom: 15)).singleAreaWidget(),
                   ),
                 ],
               ),
@@ -62,12 +76,12 @@ class _HoursPageState extends State<HoursPage> {
                   // PRECIO ACTUAL
                   Expanded(
                     // <- para que ocupe todo lo que pueda lo que hace que al haber 2 sean 50%
-                    child: SingleArea("Precio Medio", "", PricesState.media, Global.textMain, const EdgeInsets.only(right: 10, bottom: 15)).singleAreaWidget(),
+                    child: SingleArea("Precio Medio", "", mainData.media, Global.textMain, const EdgeInsets.only(right: 10, bottom: 15)).singleAreaWidget(),
                   ),
 
                   Expanded(
                     // <- para que ocupe todo lo que pueda lo que hace que al haber 2 sean 50%
-                    child: SingleArea("Precio más alto", PricesState.horaMasAlta, PricesState.precioMasAlto, Global.redWrong, const EdgeInsets.only(left: 10, bottom: 15)).singleAreaWidget(),
+                    child: SingleArea("Precio más alto", mainData.horaMasAlta, mainData.precioMasAlto, Global.redWrong, const EdgeInsets.only(left: 10, bottom: 15)).singleAreaWidget(),
                   ),
                 ],
               ),
@@ -77,7 +91,7 @@ class _HoursPageState extends State<HoursPage> {
                   child: CustomContainer.customContainer(
                     //TIPO LISTA
                     ListView.builder(
-                      itemCount: PricesState.data == null ? 0 : PricesState.data.length,
+                      itemCount: mainData.data == null ? 0 : mainData.data.length,
                       // <- señala la cantidad de elementos que va a tener la lista
                       itemBuilder: (BuildContext context, int index) {
                       //CADA ELEMENTO
@@ -106,9 +120,9 @@ class _HoursPageState extends State<HoursPage> {
                                       width: 25,
                                       height: 8,
                                       decoration: BoxDecoration(
-                                          color: (int.parse(PricesState.data[index]["PCB"].split(",")[0]) > PricesState.media + 40)
+                                          color: (int.parse(mainData.data[index]["PCB"].split(",")[0]) > mainData.media + 40)
                                               ? Global.redWrong
-                                              : (int.parse(PricesState.data[index]["PCB"].split(",")[0]) > (PricesState.media - 40))
+                                              : (int.parse(mainData.data[index]["PCB"].split(",")[0]) > (mainData.media - 40))
                                               ? Global.yellowWarning
                                               : Global.greenCorrect,
                                           borderRadius: BorderRadius.circular(10)),
@@ -116,7 +130,7 @@ class _HoursPageState extends State<HoursPage> {
                                     Padding(
                                       padding: EdgeInsets.symmetric(horizontal: 15),
                                       child: Text(
-                                        "${PricesState.data[index]["Hora"].split("-")[0]}:00h", style: TextStyle(fontSize: 17.5),
+                                        "${mainData.data[index]["Hora"].split("-")[0]}:00h", style: TextStyle(fontSize: 17.5),
                                       ),
                                     )
                                   ],
@@ -125,7 +139,7 @@ class _HoursPageState extends State<HoursPage> {
                                 // Linea con colores distintos en función de la distancia de la media
                                 Text(
                                   "0." +
-                                      PricesState.data[index]["PCB"].split(",")[0] +
+                                      mainData.data[index]["PCB"].split(",")[0] +
                                       "€/kWh",
                                   style: TextStyle(
                                       fontSize: 17.5),

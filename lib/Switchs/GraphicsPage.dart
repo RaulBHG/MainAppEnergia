@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:test_project_2/components/graphicItem.dart';
 import 'package:test_project_2/components/singleArea.dart';
+import 'package:test_project_2/objects/singleArea.dart';
 import 'package:test_project_2/main.dart';
 import '../utils/colors.dart' as Global;
 
@@ -16,22 +17,24 @@ class GraphicsPage extends StatefulWidget {
 
 class _GraphicsPageState extends State<GraphicsPage> {
 
-  static List data = PricesState.data;
-  static int media = PricesState.media;
+  final AllObject mainData = PricesState.mainObject;
 
-  static String horaActual = PricesState.horaActual;
-  static int precioActual = PricesState.precioActual;
+  /*static List data = mainData.data;
+  static int media = mainData.media;
 
-  static int precioMasAlto = PricesState.precioMasAlto;
-  static String horaMasAlta = PricesState.horaMasAlta;
+  static String horaActual = mainData.horaActual;
+  static int precioActual = mainData.precioActual;
 
-  static int precioMasBajo = PricesState.precioMasBajo;
-  static String horaMasBaja = PricesState.horaMasBaja;
+  static int precioMasAlto = mainData.precioMasAlto;
+  static String horaMasAlta = mainData.horaMasAlta;
+
+  static int precioMasBajo = mainData.precioMasBajo;
+  static String horaMasBaja = mainData.horaMasBaja;*/
 
   List<GraphicsData> dataGraphic = [];
 
   Future<List> getGraphicsData() async {
-    for (var element in data) {
+    for (var element in mainData.data) {
       print("Hora ${element['Hora'].split('-')[0]}");
       print("Hora ${element["PCB"].split(",")[0]}");
       dataGraphic.add(GraphicsData("${element['Hora'].split('-')[0]}:00", double.parse(element["PCB"].split(",")[0])));
@@ -58,12 +61,12 @@ class _GraphicsPageState extends State<GraphicsPage> {
                   // PRECIO ACTUAL
                   Expanded(
                     // <- para que ocupe todo lo que pueda lo que hace que al haber 2 sean 50%
-                    child: SingleArea("Precio ahora", horaActual, precioActual, Global.textMain, const EdgeInsets.only(right: 10, bottom: 15)).singleAreaWidget(),
+                    child: SingleArea("Precio ahora", mainData.horaActual, mainData.precioActual, Global.textMain, const EdgeInsets.only(right: 10, bottom: 15)).singleAreaWidget(),
                   ),
 
                   Expanded(
                     // <- para que ocupe todo lo que pueda lo que hace que al haber 2 sean 50%
-                    child: SingleArea("Precio más bajo", horaMasBaja, precioMasBajo, Global.greenCorrect, const EdgeInsets.only(left: 10, bottom: 15)).singleAreaWidget(),
+                    child: SingleArea("Precio más bajo", mainData.horaMasBaja, mainData.precioMasBajo, Global.greenCorrect, const EdgeInsets.only(left: 10, bottom: 15)).singleAreaWidget(),
                   ),
                 ],
               ),
@@ -72,12 +75,12 @@ class _GraphicsPageState extends State<GraphicsPage> {
                   // PRECIO ACTUAL
                   Expanded(
                     // <- para que ocupe todo lo que pueda lo que hace que al haber 2 sean 50%
-                    child: SingleArea("Precio Medio", "", media, Global.textMain, const EdgeInsets.only(right: 10, bottom: 15)).singleAreaWidget(),
+                    child: SingleArea("Precio Medio", "", mainData.media, Global.textMain, const EdgeInsets.only(right: 10, bottom: 15)).singleAreaWidget(),
                   ),
 
                   Expanded(
                     // <- para que ocupe todo lo que pueda lo que hace que al haber 2 sean 50%
-                    child: SingleArea("Precio más alto", horaMasAlta, precioMasAlto, Global.redWrong, const EdgeInsets.only(left: 10, bottom: 15)).singleAreaWidget(),
+                    child: SingleArea("Precio más alto", mainData.horaMasAlta, mainData.precioMasAlto, Global.redWrong, const EdgeInsets.only(left: 10, bottom: 15)).singleAreaWidget(),
                   ),
                 ],
               ),
