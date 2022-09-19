@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:test_project_2/Switchs/GraphicsPage.dart';
-import 'package:test_project_2/Switchs/HomePage.dart';
-import 'package:test_project_2/Switchs/HoursPage.dart';
-import 'package:test_project_2/objects/singleArea.dart';
-import 'package:test_project_2/services/GetPrices.dart';
+import 'package:MainAppEnergia/Switchs/GraphicsPage.dart';
+import 'package:MainAppEnergia/Switchs/HomePage.dart';
+import 'package:MainAppEnergia/Switchs/HoursPage.dart';
+import 'package:MainAppEnergia/objects/singleArea.dart';
+import 'package:MainAppEnergia/services/GetPrices.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:splashscreen/splashscreen.dart';

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:test_project_2/components/graphicItem.dart';
-import 'package:test_project_2/components/singleArea.dart';
-import 'package:test_project_2/objects/singleArea.dart';
-import 'package:test_project_2/main.dart';
+import 'package:MainAppEnergia/components/graphicItem.dart';
+import 'package:MainAppEnergia/components/singleArea.dart';
+import 'package:MainAppEnergia/objects/singleArea.dart';
+import 'package:MainAppEnergia/main.dart';
 import '../utils/colors.dart' as Global;
 
 import '../components/customContainer.dart' as CustomContainer;
