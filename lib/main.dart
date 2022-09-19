@@ -1,56 +1,113 @@
 import 'package:flutter/material.dart';
-import 'package:test_project_2/Switchs/GraphicsPage.dart';
-import 'package:test_project_2/Switchs/HomePage.dart';
-import 'package:test_project_2/Switchs/HoursPage.dart';
-import 'utils/colors.dart' as Global;
-import 'package:intl/intl.dart';
-import 'dart:async';
-import 'dart:convert';
+import 'package:MainAppEnergia/Switchs/GraphicsPage.dart';
+import 'package:MainAppEnergia/Switchs/HomePage.dart';
+import 'package:MainAppEnergia/Switchs/HoursPage.dart';
+import 'package:MainAppEnergia/objects/singleArea.dart';
+import 'package:MainAppEnergia/services/GetPrices.dart';
+
 import 'package:http/http.dart' as http;
 import 'package:splashscreen/splashscreen.dart';
+import 'package:flutter_share/flutter_share.dart';
+
+import 'package:flutter_localizations/flutter_localizations.dart';
+
+
+import 'dart:async';
+import 'dart:convert';
+
+import 'utils/colors.dart' as Global;
 
 
 void main() {
   //runApp(MyApp());
   runApp(MaterialApp(
+
+    //PARA PODER PONER EL CALENDARIO EN ESPAÑOL
+    localizationsDelegates: [
+      GlobalMaterialLocalizations.delegate
+    ],
+
+    theme: ThemeData(
+      textTheme:
+        TextTheme(
+          bodyText2: TextStyle(color: Global.textMain),
+        ),
+    ),
     debugShowCheckedModeBanner: false,
     home: PricesData(),
   ));
 }
 
 class PricesData extends StatefulWidget {
-
   @override
   PricesState createState() => PricesState();
 }
 
+// LLAMADA API DEL IMPERIO ESPAÑOL
 class PricesState extends State<PricesData> {
 
-  String getNowDate() {
-    var now = DateTime.now();
-    String formattedDate = DateFormat('yyyy-MM-dd').format(now);
+  static List dataIn = [];
+  static int precioTotalIn = 0;
+  static int mediaIn = 0;
+  static String horaActualIn = GetPrices.getHour();
+  static int precioActualIn = 0;
+  static int precioMasAltoIn = 0;
+  static String horaMasAltaIn = "";
+  static int precioMasBajoIn = 10000;
+  static String horaMasBajaIn = "";
+  
+  static AllObject mainObject = new AllObject(dataIn, precioTotalIn, mediaIn, horaActualIn, precioActualIn, precioMasAltoIn, horaMasAltaIn, precioMasBajoIn, horaMasBajaIn);
 
-    return "https://api.esios.ree.es/archives/70/download_json?locale=es&date=$formattedDate";
+  //AllObject dataDay = new AllObject();
+
+  Future<String> getSWData({String date = "today"}) async {
+    var res = await http.get(Uri.parse(GetPrices.getNowDate(date)),
+        headers: {"Accept": "application/json"});
+
+    var resBody = json.decode(res.body);
+    mainObject.data = resBody["PVPC"];
+
+    mainObject.precioTotal = 0;
+    mainObject.precioMasAlto = 0;
+    mainObject.precioMasBajo = 10000;
+    for (var hour in mainObject.data) {
+      int price = int.parse(hour["PCB"].split(",")[0]);
+
+      //CÁLCULO PRECIO ACTUAL
+      mainObject.horaActual = GetPrices.getHour();
+      if (mainObject.horaActual.split(':')[0] == hour['Hora'].split('-')[0]) {
+        mainObject.precioActual = price;
+      }
+
+      //CÁLCULO PRECIO MÁS ALTO
+      mainObject.horaMasAlta = (price > mainObject.precioMasAlto ? hour['Hora'].split('-')[0]+":30" : mainObject.horaMasAlta);
+      mainObject.precioMasAlto = (price > mainObject.precioMasAlto ? price : mainObject.precioMasAlto);
+
+      //CÁLCULO PRECIO MÁS BAJO
+      mainObject.horaMasBaja = (price < mainObject.precioMasBajo ? hour['Hora'].split('-')[0]+":30" : mainObject.horaMasBaja);
+      mainObject.precioMasBajo = (price < mainObject.precioMasBajo ? price : mainObject.precioMasBajo);
+
+      //PRECIO TOTAL
+      mainObject.precioTotal += price;
+    }
+    mainObject.media = int.parse((mainObject.precioTotal / 24).toString().split(".")[0]);
+
+    /*print("LLEGA--------------------------------------------");
+    print("Precio total: ${mainObject.precioTotal}");
+    print("Precio media: ${mainObject.media}");
+    print("Precio horaActual: ${mainObject.horaActual}");
+    print("Precio precioActual: ${mainObject.precioActual}");
+    print("Precio precioMasAlto: ${mainObject.precioMasAlto}");
+    print("Precio horaMasAlta: ${mainObject.horaMasAlta}");
+    print("Precio precioMasBajo: ${mainObject.precioMasBajo}");
+    print("Precio horaMasBaja: ${mainObject.horaMasBaja}");*/
+
+
+    return "SUCCESS";
   }
 
-  //String url = getNowDate();
-  static List data = [];
-  static int precioTotal = 0;
-  static int media = 0;
-
-  Future<String> getSWData() async {
-    var res = await http
-        .get(Uri.parse(getNowDate()), headers: {"Accept": "application/json"});
-    setState(() {
-      var resBody = json.decode(res.body);
-      data = resBody["PVPC"];
-    });
-    for (var hour in data) {
-      print("precio:${hour["PCB"].split(",")[0]}");
-      precioTotal += int.parse(hour["PCB"].split(",")[0]);
-    }
-    media = int.parse((precioTotal/24).toString().split(".")[0]);
-    return "Success!";
+  void getSW() {
+    getSWData();
   }
 
   @override
@@ -64,364 +121,112 @@ class PricesState extends State<PricesData> {
       ),
       image: Image.network(
           'https://flutter.io/images/catalog-widget-placeholder.png'),
-      backgroundColor: Colors.white,
+      backgroundColor: Global.textMain,
       loaderColor: Colors.red,
     );
-    /*return Scaffold(
-      backgroundColor: Colors.blue,
-      appBar: AppBar(
-        title: Text("Tu precio de luz"),
-        backgroundColor: Colors.amberAccent,
-      ),
-      /*
-      body: ListView.builder(
-        itemCount: data == null ? 0 : data.length,
-        itemBuilder: (BuildContext context, int index) {
-          return Container(
-            child: Center(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.black,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Card(
-                      clipBehavior: Clip.antiAlias,
-                      shadowColor: Colors.transparent,
-                      child: Container(
-                        padding: EdgeInsets.all(15.0),
-                        child: Column(
-                          children: <Widget>[
-                            Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: <Widget>[
-                                  Text(
-                                    data[index]["Hora"].split("-")[0] +
-                                        "h - " +
-                                        data[index]["Hora"].split("-")[1] +
-                                        "h",
-                                    style: TextStyle(
-                                        fontSize: 20.0, color: Colors.black87),
-                                  ),
-                                  Container(
-                                    width: 60,
-                                    height: 15,
-                                    decoration: new BoxDecoration(
-                                        color: (int.parse(data[index]["PCB"]
-                                                    .split(",")[0]) <
-                                                250)
-                                            ? Color.fromARGB(255, 33, 245, 36)
-                                            : (int.parse(data[index]["PCB"]
-                                                        .split(",")[0]) <
-                                                    300)
-                                                ? Color.fromARGB(
-                                                    255, 245, 202, 25)
-                                                : Color.fromARGB(
-                                                    255, 255, 0, 0),
-                                        borderRadius:
-                                            BorderRadius.circular(10)),
-                                  ),
-                                  Text(
-                                    "0." +
-                                        data[index]["PCB"].split(",")[0] +
-                                        "€/kWh",
-                                    style: TextStyle(
-                                        fontSize: 20.0, color: Colors.black87),
-                                  )
-                                ]),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          );
-        },
-      ),
-      */
-      body: Center(
-        child: _children.elementAt(_selectedIndex),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.shifting,
-        currentIndex: _selectedIndex,
-        backgroundColor: Colors.black, // <-- This works for fixed
-        selectedItemColor: Colors.greenAccent,
-        unselectedItemColor: Colors.white,
-        onTap: (value) => setState(() => _selectedIndex = value),
-        items: [
-          for (final option in options) BottomNavigationBarItem(
-            icon: Icon(option.icon),
-            label: option.name,
-            backgroundColor: option.color
-
-          ),
-        ],
-      ),
-    );*/
   }
 
   @override
   void initState() {
     super.initState();
-    this.getSWData();
+    getSWData();
   }
-
 }
 
+// DESPUÉS DE LA SPLASH SCREEN
+class AfterSplash extends StatefulWidget {
+  @override
+  MainState createState() => MainState();
+}
+
+// OPCIONES DEL MENÚ DE ABAJO
 class Option {
   final String name;
-  final IconData icon;
-  final Color color;
+  final String icon;
+  final String activeIcon;
+
   const Option({
     required this.name,
     required this.icon,
-    required this.color,
+    required this.activeIcon,
   });
 }
 
-class AfterSplash extends StatefulWidget {
-
-  @override
-  MainState createState() => MainState();
-
-  /*static const List<Option> options = [
-    Option(name: "Ahora", icon: Icons.today, color: Colors.black),
-    Option(name: "Por horas", icon: Icons.access_time, color: Colors.blueGrey),
-    Option(name: "Gráfico", icon: Icons.add_chart, color: Colors.grey),
-  ];
-
-  int _selectedIndex = 0;
-  Option get option => options [_selectedIndex];
-  static const TextStyle optionStyle =
-  TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  static const List<Widget> _children = <Widget>[
-    HomePage(),
-    HoursPage(),
-    GraphicsPage()
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.blue,
-      appBar: AppBar(
-        title: Text("Tu precio de luz"),
-        backgroundColor: Colors.amberAccent,
-      ),
-      /*
-      body: ListView.builder(
-        itemCount: data == null ? 0 : data.length,
-        itemBuilder: (BuildContext context, int index) {
-          return Container(
-            child: Center(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.black,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Card(
-                      clipBehavior: Clip.antiAlias,
-                      shadowColor: Colors.transparent,
-                      child: Container(
-                        padding: EdgeInsets.all(15.0),
-                        child: Column(
-                          children: <Widget>[
-                            Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: <Widget>[
-                                  Text(
-                                    data[index]["Hora"].split("-")[0] +
-                                        "h - " +
-                                        data[index]["Hora"].split("-")[1] +
-                                        "h",
-                                    style: TextStyle(
-                                        fontSize: 20.0, color: Colors.black87),
-                                  ),
-                                  Container(
-                                    width: 60,
-                                    height: 15,
-                                    decoration: new BoxDecoration(
-                                        color: (int.parse(data[index]["PCB"]
-                                                    .split(",")[0]) <
-                                                250)
-                                            ? Color.fromARGB(255, 33, 245, 36)
-                                            : (int.parse(data[index]["PCB"]
-                                                        .split(",")[0]) <
-                                                    300)
-                                                ? Color.fromARGB(
-                                                    255, 245, 202, 25)
-                                                : Color.fromARGB(
-                                                    255, 255, 0, 0),
-                                        borderRadius:
-                                            BorderRadius.circular(10)),
-                                  ),
-                                  Text(
-                                    "0." +
-                                        data[index]["PCB"].split(",")[0] +
-                                        "€/kWh",
-                                    style: TextStyle(
-                                        fontSize: 20.0, color: Colors.black87),
-                                  )
-                                ]),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          );
-        },
-      ),
-      */
-      body: Center(
-        child: _children.elementAt(_selectedIndex),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.shifting,
-        currentIndex: _selectedIndex,
-        backgroundColor: Colors.black, // <-- This works for fixed
-        selectedItemColor: Colors.greenAccent,
-        unselectedItemColor: Colors.white,
-        onTap: (value) => setState(() => _selectedIndex = value),
-        items: [
-          for (final option in options) BottomNavigationBarItem(
-              icon: Icon(option.icon),
-              label: option.name,
-              backgroundColor: option.color
-
-          ),
-        ],
-      ),
-    );
-  }*/
-}
-
+// ESTRUCTURA PRINCIPAL
 class MainState extends State<AfterSplash> {
 
+  //SELECCION OPCIONES
   static const List<Option> options = [
-    Option(name: "Ahora", icon: Icons.today, color: Colors.black),
-    Option(name: "Por horas", icon: Icons.access_time, color: Colors.blueGrey),
-    Option(name: "Gráfico", icon: Icons.add_chart, color: Colors.grey),
+    Option(
+        name: "Precios",
+        icon: 'assets/images/prices_icon.png',
+        activeIcon: 'assets/images/prices_icon_active.png'),
+    Option(
+        name: "Evolución",
+        icon: 'assets/images/graph_icon.png',
+        activeIcon: 'assets/images/graph_icon_active.png'),
+    Option(
+        name: "Compartir",
+        icon: 'assets/images/share_icon.png',
+        activeIcon: 'assets/images/share_icon_active.png'),
   ];
 
   int _selectedIndex = 0;
-  Option get option => options [_selectedIndex];
-  static const TextStyle optionStyle =
-  TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+
   static const List<Widget> _children = <Widget>[
-    HomePage(),
     HoursPage(),
-    GraphicsPage()
+    GraphicsPage(),
+    HomePage()
   ];
+  //FIN SELECCIÓN DE OPCIONES
+
+  //SHARE FUNCTION
+  Future<void> share() async {
+    await FlutterShare.share(
+        title: 'Compartir ejemplo',
+        text: 'Texto de info a compartir',
+        linkUrl: 'https://flutter.dev/',
+        chooserTitle: 'Titulo de chooser');
+  }
+  //FIN SHARE FUNCTION
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blue,
+      backgroundColor: Global.mainColor,
       appBar: AppBar(
-        title: Text("Tu precio de luz"),
-        backgroundColor: Colors.amberAccent,
+        title: Image.asset('assets/images/logo.png', height: 70, width: 120),
+        centerTitle: true,
+        toolbarHeight: 70,
+        backgroundColor: Global.mainColor,
       ),
-      /*
-      body: ListView.builder(
-        itemCount: data == null ? 0 : data.length,
-        itemBuilder: (BuildContext context, int index) {
-          return Container(
-            child: Center(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.black,
+      body: Center(child: _children.elementAt(_selectedIndex)),
+      bottomNavigationBar: SizedBox(
+        height: 70,
+        child: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          currentIndex: _selectedIndex,
+          selectedItemColor: Global.greenMain,
+          unselectedItemColor: Color.fromARGB(255, 189, 189, 189),
+          backgroundColor: Global.mainColor,
+          onTap: (value) => ((value != 2) ? (setState(() => _selectedIndex = value)) : share()),
+          items: [
+            for (final option in options)
+              BottomNavigationBarItem(
+                icon: Container(
+                    padding: EdgeInsets.fromLTRB(0, 0, 0, 6),
+                    child: Image.asset(option.icon, height: 20, width: 25),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Card(
-                      clipBehavior: Clip.antiAlias,
-                      shadowColor: Colors.transparent,
-                      child: Container(
-                        padding: EdgeInsets.all(15.0),
-                        child: Column(
-                          children: <Widget>[
-                            Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: <Widget>[
-                                  Text(
-                                    data[index]["Hora"].split("-")[0] +
-                                        "h - " +
-                                        data[index]["Hora"].split("-")[1] +
-                                        "h",
-                                    style: TextStyle(
-                                        fontSize: 20.0, color: Colors.black87),
-                                  ),
-                                  Container(
-                                    width: 60,
-                                    height: 15,
-                                    decoration: new BoxDecoration(
-                                        color: (int.parse(data[index]["PCB"]
-                                                    .split(",")[0]) <
-                                                250)
-                                            ? Color.fromARGB(255, 33, 245, 36)
-                                            : (int.parse(data[index]["PCB"]
-                                                        .split(",")[0]) <
-                                                    300)
-                                                ? Color.fromARGB(
-                                                    255, 245, 202, 25)
-                                                : Color.fromARGB(
-                                                    255, 255, 0, 0),
-                                        borderRadius:
-                                            BorderRadius.circular(10)),
-                                  ),
-                                  Text(
-                                    "0." +
-                                        data[index]["PCB"].split(",")[0] +
-                                        "€/kWh",
-                                    style: TextStyle(
-                                        fontSize: 20.0, color: Colors.black87),
-                                  )
-                                ]),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
+                activeIcon: Container(
+                  padding: EdgeInsets.fromLTRB(0, 0, 0, 6),
+                  child: Image.asset(option.activeIcon, height: 20, width: 25),
                 ),
+                label: option.name,
+                backgroundColor: Global.mainColor,
               ),
-            ),
-          );
-        },
-      ),
-      */
-      body: Center(
-        child: _children.elementAt(_selectedIndex),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.shifting,
-        currentIndex: _selectedIndex,
-        backgroundColor: Colors.black, // <-- This works for fixed
-        selectedItemColor: Colors.greenAccent,
-        unselectedItemColor: Colors.white,
-        onTap: (value) => setState(() => _selectedIndex = value),
-        items: [
-          for (final option in options) BottomNavigationBarItem(
-              icon: Icon(option.icon),
-              label: option.name,
-              backgroundColor: option.color
-
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
-
 }
