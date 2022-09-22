@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:MainAppEnergia/components/singleArea.dart';
-import 'package:MainAppEnergia/objects/singleArea.dart';
+import 'package:MainAppEnergia/objects/allObject.dart';
 import '../main.dart';
 
 import '../utils/colors.dart' as Global;

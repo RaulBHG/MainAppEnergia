@@ -17,7 +17,6 @@ class AllObject {
 
   AllObject(this.data, this.precioTotal, this.media, this.horaActual, this.precioActual, this.precioMasAlto, this.horaMasAlta, this.precioMasBajo, this.horaMasBaja);
 
-
 }
 
 
